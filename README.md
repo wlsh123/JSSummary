@@ -77,7 +77,7 @@
 console.log(typeof null) //object
 ```
 
-当变脸被声明但没有赋值就会是undefined
+当变量被声明但没有赋值就会是undefined
 
 ### Boolean
 
@@ -94,9 +94,149 @@ console.log(typeof null) //object
 
 ### Array
 
+- 创建数组
+
+  ```javascript
+  //1.构造器
+   let colors = new Array();
+  //2.数组字面量
+   let values = [1,2];
+  //3.ES6静态方法
+   Array.from('foo')//从一个类似数组或可迭代对象创建一个新的，浅拷贝的数组实例。
+   Array.of(1,2,3)//创建一个具有可变数量参数的新数组实例
+  ```
+
+- 数组空位
+
+  ```javascript
+  //可以创建空位数组
+  const a = [1,,,,5];
+  a.map()//跳过空位
+  a.join()//空位看作空字符串
+  ```
+
+- 数组索引
+
+  ```javascript
+  //length不是只读，可以修改它实现增删元素
+  let s = [1,2,3];
+  s.length = 2;
+  s[2] //undefined
+  s.length = 4;
+  s[3] //undefined
+  ```
+
+- 检测数组
+
+  ```javascript
+  //1.instanceof
+   value instanceof Array;
+  //2.isArray() -推荐使用
+   Array.isArray(value)
+  ```
+
+- 迭代器方法
+
+  ```javascript
+  //1.Array.keys()
+  const array1 = ['a', 'b', 'c'];
+  const iterator = array1.keys();//返回由数组索引组成的迭代器
+  for (const key of iterator) {
+    console.log(key);//[0,1,2]
+  }
+  
+  //2.Array.values()
+  const iterator = array1.values();//返回由数组元素组成的迭代器
+  for (const key of iterator) {
+    console.log(key);//[a,b,c]
+  }
+  
+  //3.Array.entries()
+  const iterator = array1.entries();//返回由数组索引和值组成的迭代器
+  for (const key of iterator) {
+    console.log(key);//[[0,a],[1,b],[2,c]]
+  }
+  ```
+
+- 数组复制
+
+  ```javascript
+  //copyWithin 浅复制数组的一部分到同一数组中的另一个位置，并返回它，不会改变原数组的长度。
+  const array1 = ['a', 'b', 'c', 'd', 'e'];
+  console.log(array1.copyWithin(1, 2, 4));//[a,c,d,d,e]
+  ```
+
+- 数组填充
+
+  ```javascript
+  //fill 用一个固定值填充一个数组中从起始索引到终止索引内的全部元素。(不包括终止索引)
+  const array1 = [1, 2, 3, 4];
+  console.log(array1.fill("*", 2, 4));//[1,2,"*","*"]
+  ```
+
+- 数组转换
+
+  ```javascript
+  /*这三个方法所有对象都有，Array、Number、String、Date...*/
+  //1.toLocaleString()
+   返回一个字符串表示数组中的元素。
+  //2.toString()
+   const array1 = [1, 2, 'a', '1a'];
+   console.log(array1.toString());//返数组元素组成的字符串（中间会有‘,’）
+  //3.valueOf()
+  ```
+
+- 栈方法
+
+  ```javascript
+  //push() 将一个或多个元素添加到数组的末尾，并返回数组的新长度。
+   const animals = ['pigs', 'goats', 'sheep'];
+   const count = animals.push('cows');
+   console.log(count+animals);
+  //pop() 从数组中删除最后一个元素，并返回该元素的值。
+   const plants = ['broccoli', 'cauliflower', 'cabbage', 'kale', 'tomato'];
+   console.log(plants.pop());
+  ```
+
+- 队列方法
+
+  ```javascript
+  //unshift() 将一个或多个元素添加到数组的开头，并返回该数组的新长度
+   const animals = ['pigs', 'goats', 'sheep'];
+   const count = animals.unshift('cows');
+   console.log(count+animals);
+  //shift() 从数组中删除第一个元素，并返回该元素的值
+   const plants = ['broccoli', 'cauliflower', 'cabbage', 'kale', 'tomato'];
+   console.log(plants.shift());
+  ```
+
+- 排序方法
+
+  ```javascript
+  //reverse() 反转数组，改变数组并返回
+   const array1 = ['one', 'two', 'three'];
+   const reversed = array1.reverse();
+   console.log('reversed:', reversed);
+  //sort([compareFunction]) 比较函数返回正值就换位置，返回负值就不换位置
+   var numbers = [4, 2, 5, 1, 3];
+   numbers.sort((a, b) => a - b)//增序
+  ```
+
+- 操作方法
+
+  ```javascript
+  
+  ```
+
+  
+
 ### Object
 
 ### Function
+
+## 迭代器与生成器
+
+### 数据结构
 
 ## 语句
 
@@ -112,6 +252,8 @@ console.log(typeof null) //object
 
 ### 作用域
 
+### 原型、原型链
+
 ### 内存
 
 ## Date
@@ -120,19 +262,11 @@ console.log(typeof null) //object
 
 ## RegExp
 
-## String API
-
-## Object API
-
-## Array API
-
 ## Set和Map
 
 ## 异步 
 
 ### Promise
-
-## 迭代器与生成器
 
 ## BOM
 
