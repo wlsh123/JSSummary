@@ -68,7 +68,83 @@
 
 ​	模版字符串：`Hello ${name}!`
 
-- 
+- 字符转换
+
+  ```javascript
+  var x = new String("Hello world");
+  console.log(x.toString())//"Hello world"
+  ```
+
+- 字符串拼接
+
+  ```javascript
+  //concat() 将一个或多个字符串与原字符串连接合并，形成一个新的字符串并返回。
+   str1.concat(str2,str3);
+  ```
+
+- 字符串查找
+
+  ```javascript
+  //1.indexOf() 从字符串对象中返回首个被发现的给定值的索引值，如果没有找到则返回-1。
+   const str = 'hello world ni hao world';
+   str.indexOf('o');//4
+  
+  //2.lastIndexOf() 从字符串对象中返回最后一个被发现的给定值的索引值，如果没有找到则返回-1。
+   str.lastIndexOf('o')//20
+  
+  //3.startsWith() 判断当前字符串是否以另外一个给定的子字符串开头，并根据判断结果返回 true 或 false。
+   str.startsWith('hello'); //true
+  
+  //4.endsWith() 判断当前字符串是否是以另外一个给定的子字符串“结尾”的，根据判断结果返回 true 或 false。
+   str.endsWith('shi jie');//true
+  
+  //5.includes() 返回布尔值，表示是否找到了参数字符串。
+   str.includes('')
+  ```
+
+- 字符填充
+
+  ```javascript
+  //1.padStart() 在当前字符串头部填充指定的字符串， 直到达到指定的长度。 返回一个新的字符串。
+   var str = "hello";
+   console.log(str1.padStart(10, '*')); //"*****hello"
+  //2.padEnd() 在当前字符串尾部填充指定的字符串， 直到达到指定的长度。 返回一个新的字符串。
+   console.log(str1.padEnd(10, "#"));//"hello#####"
+  ```
+
+- 大小写转换
+
+  ```javascript
+  //1.toLocaleUpperCase()
+  //2.toUpperCase()
+  //3.toLowerCase()
+  //4.toLocaleLowerCase()
+  ```
+
+- 去除空格
+
+  ```javascript
+  //1.trim()
+  
+  //2.trimStart()
+  
+  //3.trimEnd()
+  ```
+
+- 字符串裁剪
+
+  ```javascript
+  //1.slice() 提取某个字符串的一部分，并返回一个新的字符串，且不会改动原字符串。
+   const str1 = "hello world ni hao"
+   
+  //2.split() 使用指定的分隔符字符串将一个String对象分割成子字符串数组，以一个指定的分割字串来决定每个拆分的位置。 
+   console.log(str1.split(''));//["hello", "world", "ni", "hao"]
+  
+  //3.substring() 返回一个字符串在开始索引到结束索引之间的一个子集, 或从开始索引直到字符串的末尾的一个子集。
+   console.log(str1.substring(0,5))//hello
+  ```
+
+  
 
 ### Symbol
 
@@ -230,6 +306,30 @@ console.log(typeof null) //object
 
   ```javascript
   
+  ```
+
+- 扩展运算符
+
+  ```javascript
+  /*ES6中的三个点 ... 有两个名字:rest参数和扩展运算符.
+  当用在函数定义时的形参前面时,称为rest参数,当函数调用时,用于接收不确定的参数.
+  当与解构赋值组合使用时,称为rest参数,用于接收剩余的值,存储在数组中.
+  当用在字符串或数组前面时称为扩展运算符,将数组或字符串进行拆解.
+  */
+  
+  function sumRest (...m) {
+  	var total = 0; 
+  	for(var i of m){
+  	    total += i;
+  	}
+  	return total;
+  }
+  console.log(sumRest(1,2,3));//6
+  
+  var array = [1,2,3,4,5];
+  console.log(...array);//1 2 3 4 5
+  var str = "String";
+  console.log(...str);//S t r i n g
   ```
 
   
