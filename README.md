@@ -305,8 +305,75 @@ console.log(typeof null) //object
 - 操作方法
 
   ```javascript
+  //1.concat() 
   
+  //2.join() 将一个数组（或一个类数组对象）的所有元素连接成一个字符串并返回这个字符串。
+   const elements = ['Fire', 'Air', 'Water'];
+   console.log(elements.join(''));//"FireAirWater"
+  //3.slice()
+  
+  //4.splice()通过删除或替换现有元素或者原地添加新的元素来修改数组,并以数组形式返回被修改的内容。此方法会改变原数组。这个方法返回值是被删除元素组成的数组
+  //插入
+   var myFish = ["angel", "clown", "mandarin", "sturgeon"];
+   var removed = myFish.splice(2, 0, "drum");
+   console.log(removed);// []
+   console.log(myFish);//["angel", "clown", "drum", "mandarin", "sturgeon"]
+  //删除
+   var myFish = ['angel', 'clown', 'drum', 'mandarin', 'sturgeon'];
+   var removed = myFish.splice(3, 1);
+   console.log(removed);// [mandarin]
+   console.log(myFish);// ["angel", "clown", "drum", "sturgeon"]
+  //替换(删除后插入)
+   var myFish = ['angel', 'clown', 'drum', 'mandarin', 'sturgeon'];
+   var removed = myFish.splice(3, 1, "aaa");
+   console.log(removed);// [mandarin]
+   console.log(myFish);// ["angel", "clown", "drum", "sturgeon"]
   ```
+
+- 搜素和位置方法
+
+  ```javascript
+  //1.indexOf()
+  
+  //2.lastIndexOf()
+  
+  //3.includes()
+  
+  //4.find() 返回数组中满足提供的测试函数的第一个元素的值。否则返回 undefined.
+   const array1 = [5, 12, 8, 130, 44];
+   const found = array1.find(element => element > 10);
+  
+  //5.findIndex() 返回数组中满足提供的测试函数的第一个元素的索引。若没有找到对应元素则返回-1。
+   const foundIndex = array1.findIndex(element => element > 10);
+  ```
+  
+- 迭代方法
+
+  ```javascript
+  //1.every() 对数组每一项都运行传入的函数，每一项都返回true，则这个方法返回true。
+   [12, 5, 8, 130, 44].every(x => x >= 10);//false
+  //2.some() 对数组每一项都运行传入的函数，只要有一项函数返回true，则这个方法返回true。
+   [12, 5, 8, 130, 44].some(x => x >= 10);//true
+  //3.forEach() 对数组每一项都运行传入的函数，没有返回值。
+   [12, 5, 8, 130, 44].forEach(x => x = x+1);
+  //4.map() 对数组每一项都运行传入的函数，返回值由每次函数调用的结果构成的数组。
+   [12, 5, 8, 130, 44].map(x => x = x+1);
+  //5.filter() 对数组每一项都运行传入的函数，函数返回true的项会组成数组之后返回.
+   [12, 5, 8, 130, 44].filter(x => x >= 10);
+  //6.reduce() 对数组中的每个元素执行一个由您提供的reducer函数(升序执行)，将其结果汇总为单个返回值。
+   var arr = [1, 2, [3, 4]];
+   arr.reduce((acc, val) => acc.concat(val), []);
+  ```
+
+- 数组“拉平”
+
+  ```javascript
+  //flat() 按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。
+   const arr1 = [0, 1, 2, [3, 4]];
+   console.log(arr1.flat(1));
+  ```
+
+  
 
 - 扩展运算符
 
@@ -332,15 +399,118 @@ console.log(typeof null) //object
   console.log(...str);//S t r i n g
   ```
 
-  
+
+### Map(映射)
+
+- 含义解释
+
+  JavaScript 的对象（Object），本质上是键值对的集合（Hash 结构），但是传统上只能用字符串当作键。这给它的使用带来了很大的限制。为了解决这个问题，ES6 提供了 Map 数据结构。它类似于对象，也是键值对的集合，但是“键”的范围不限于字符串，各种类型的值（包括对象）都可以当作键。也就是说，Object 结构提供了“字符串—值”的对应，Map 结构提供了“值—值”的对应，是一种更完善的 Hash 结构实现。如果你需要“键值对”的数据结构，Map 比 Object 更合适。
+
+- 基本API
+
+  ```javascript
+  //get(),set(),has(),delete(),clear(),size
+   const map1 = new Map();
+   map1.set('a', 'alpha');
+   map1.set('b', 'beta');
+   map1.set('g', 'gamma');
+   console.log(map1.size);//3
+   console.log(map1.get("a"))//alpha
+   console.log(map1.has("a"))//true
+   map1.delete("a");
+   map1.clear();//清除所有成员
+  ```
+
+- 遍历方法
+
+  ```javascript
+  //1.keys() 返回键名的遍历器。
+   const map = new Map([
+    ['F', 'no'],
+    ['T',  'yes'],
+   ]);
+   for (let key of map.keys()) {
+    console.log(key);//F T
+   }
+  //2.values() 返回键值的遍历器。
+   for (let value of map.values()) {
+    console.log(value);//no yes
+  }
+  //3.entries() 返回所有成员的遍历器。
+   for (let item of map.entries()) {
+    console.log(item[0], item[1]);//['F', 'no'] ['T',  'yes']
+  }
+  //4.forEach()
+  ```
+
+- Object与Map比较
+
+  1. 内存占用：Map大约可以比Object多存储50%的健/值对。
+  2. 插入性能：涉及大量插入操作时，Map性能更优。
+  3. 查找速度：设计大量查找操作时，Object性能更优。
+  4. 删除性能：设计大量删除操作时，Map性能更优。
+
+- WeakMap
+
+  1. `WeakMap`只接受对象作为键名（`null`除外），不接受其他类型的值作为键名。
+  2. `WeakMap`的键名所指向的对象，不计入垃圾回收机制。
+
+### Set(集合)
+
+​	Set在很多方面都像是加强的Map。它类似于数组，但是成员的值都是唯一的，没有重复的值。
+
+- 基本API
+
+  ```javascript
+  //构造器 
+   const s = new Set(); 
+   const set = new Set([1, 2, 3, 4, 4]);
+  //add() has() delete() clear()
+   [2, 3, 5, 4, 5, 2, 2].forEach(x => s.add(x));
+   s.size;
+  //数组去重
+   [...new Set(array)]
+  //字符去重
+   [...new Set('ababbc')].join('')
+  ```
+
+- 遍历方法
+
+  ```javascript
+  //keys() values() entries() forEach()
+  ```
+
+- WeakSet
 
 ### Object
 
+- 对象解构赋值
+
+  ```javascript
+  let person = {
+    name:'matt',
+    age:27
+  }
+  let {name, age} = person;
+  let {name:personName, age:personAge} = person;
+  let {name, age, job='Software engineer'} = person;
+  
+  //嵌套解构
+   let person = {
+    name:'matt',
+    age:27,
+    job:{title:'Software engineer'}
+  }
+   let {job:{title}} = person
+  ```
+
 ### Function
+
+## Class
 
 ## 迭代器与生成器
 
-### 数据结构
+## 数据结构
 
 ## 语句
 
@@ -356,8 +526,6 @@ console.log(typeof null) //object
 
 ### 作用域
 
-### 原型、原型链
-
 ### 内存
 
 ## Date
@@ -365,8 +533,6 @@ console.log(typeof null) //object
 ## Math
 
 ## RegExp
-
-## Set和Map
 
 ## 异步 
 
