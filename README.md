@@ -506,33 +506,190 @@ console.log(typeof null) //object
 
 ### Function
 
-## Class
-
-## 迭代器与生成器
-
-## 数据结构
-
-## 语句
-
-
-
 ## 变量
 
-### var
+### 变量声明
 
-### let
-
-### const
+- var
+- let
+- const
+  1. var 声明的变量属于函数作用域，let 和 const 声明的变量属于块级作用域；
+  2. var 存在变量提升现象，而 let 和 const 没有此类现象；
+  3. var 变量可以重复声明，而在同一个块级作用域，let 变量不能重新声明，const 变量不能修改。
 
 ### 作用域
 
+#### [闭包](https://zhuanlan.zhihu.com/p/22486908)
+
 ### 内存
 
-## Date
+垃圾回收
 
-## Math
+- 标记清理
+- 引用计数
 
-## RegExp
+## 语句
+
+- 条件语句
+
+  ```javascript
+  //1.if语句
+   if(condition){
+     ...
+   }
+  //2.while语句
+    while(expression){
+      ...
+    }
+  //3.do-while语句
+     do{
+  			...
+     }while(expression)
+  ```
+
+- 循环语句
+
+  ```javascript
+  //1.for语句
+   for(initValue, expression, state){
+     ...
+   }
+  //2.for-in语句
+    for(... in ...){
+      ...
+    }
+  //3.for-of语句
+    	for(...of ...){
+      ...
+    }
+  ```
+
+- 分支语句
+
+  ```javascript
+  //1.switch语句
+   switch(expression){
+     case value1:
+       statement
+       continue;
+     case value2:
+  		 statement
+       breack;
+     default:
+       statement
+   }
+  ```
+
+## 迭代器与生成器
+
+- Iterator(迭代器)
+
+  它是一种接口，为各种不同的数据结构提供统一的访问机制。任何数据结构只要部署 Iterator 接口，就可以完成遍历操作（即依次处理该数据结构的所有成员）。
+
+  Iterator 的遍历过程是这样的。
+
+  （1）创建一个指针对象，指向当前数据结构的起始位置。也就是说，遍历器对象本质上，就是一个指针对象。
+
+  （2）第一次调用指针对象的`next`方法，可以将指针指向数据结构的第一个成员。
+
+  （3）第二次调用指针对象的`next`方法，指针就指向数据结构的第二个成员。
+
+  （4）不断调用指针对象的`next`方法，直到它指向数据结构的结束位置。
+
+  `next`方法返回一个对象，表示当前数据成员的信息。这个对象具有`value`和`done`两个属性，`value`属性返回当前位置的成员，`done`属性是一个布尔值，表示遍历是否结束，即是否还有必要再一次调用`next`方法。
+
+  总之，调用指针对象的`next`方法，就可以遍历事先给定的数据结构。
+
+  原生具备 Iterator 接口的数据结构如下。
+
+  - Array
+  - Map
+  - Set
+  - String
+  - TypedArray
+  - 函数的 arguments 对象
+  - NodeList 对象
+
+- Generator(生成器)
+
+  Generator 函数是一个普通函数，但是有两个特征。一是，`function`关键字与函数名之间有一个星号；二是，函数体内部使用`yield`表达式，定义不同的内部状态（`yield`在英语里的意思就是“产出”）。
+
+  ```javascript
+  function* helloWorldGenerator() {
+    yield 'hello';
+    yield 'world';
+    return 'ending';
+  }
+  
+  var hw = helloWorldGenerator();
+  ```
+
+  调用 Generator 函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象，也就是上一章介绍的遍历器对象（Iterator Object）。
+
+  下一步，必须调用遍历器对象的`next`方法，使得指针移向下一个状态。也就是说，每次调用`next`方法，内部指针就从函数头部或上一次停下来的地方开始执行，直到遇到下一个`yield`表达式（或`return`语句）为止。换言之，Generator 函数是分段执行的，`yield`表达式是暂停执行的标记，而`next`方法可以恢复执行。
+
+  ```javascript
+  hw.next() // { value: 'hello', done: false }
+  hw.next()// { value: 'world', done: false }
+  hw.next()// { value: 'ending', done: true }
+  hw.next()// { value: undefined, done: true }
+  ```
+
+  总结一下，调用 Generator 函数，返回一个遍历器对象，代表 Generator 函数的内部指针。以后，每次调用遍历器对象的`next`方法，就会返回一个有着`value`和`done`两个属性的对象。`value`属性表示当前的内部状态的值，是`yield`表达式后面那个表达式的值；`done`属性是一个布尔值，表示是否遍历结束。
+
+  - yield
+
+  由于 Generator 函数返回的遍历器对象，只有调用`next`方法才会遍历下一个内部状态，所以其实提供了一种可以暂停执行的函数。`yield`表达式就是暂停标志。
+
+  遍历器对象的`next`方法的运行逻辑如下。
+
+  （1）遇到`yield`表达式，就暂停执行后面的操作，并将紧跟在`yield`后面的那个表达式的值，作为返回的对象的`value`属性值。
+
+  （2）下一次调用`next`方法时，再继续往下执行，直到遇到下一个`yield`表达式。
+
+  （3）如果没有再遇到新的`yield`表达式，就一直运行到函数结束，直到`return`语句为止，并将`return`语句后面的表达式的值，作为返回的对象的`value`属性值。
+
+  （4）如果该函数没有`return`语句，则返回的对象的`value`属性值为`undefined`。
+
+## 类
+
+- 构造函数
+
+  ```javascript
+  class Person(){
+    constructor(){
+      super()
+  		...
+    }
+  }
+  ```
+
+- 继承
+
+  ```javascript
+  class A extends react.Component(){
+  	constructor(){
+      super()
+      ...
+    }
+  }
+  ```
+
+- 静态
+
+  ```javascript
+  class A extends react.Component(){
+  	constructor(){
+      super()
+      ...
+    }
+    static proptype = {
+      ...
+    }
+  }
+  ```
+
+  
 
 ## 异步 
 
