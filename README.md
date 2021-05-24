@@ -693,7 +693,253 @@ console.log(typeof null) //object
 
 ## 异步 
 
-### Promise
+### Promise(期约)
+
+所谓`Promise`，简单说就是一个容器，里面保存着某个未来才会结束的事件（通常是一个异步操作）的结果。从语法上说，Promise 是一个对象，从它可以获取异步操作的消息。Promise 提供统一的 API，各种异步操作都可以用同样的方法进行处理。
+
+- 期约实例
+
+  ```javascript
+  const p = new Promise((resolve,reject)=>{
+  	if(){
+      resolve(value) 
+       }else{
+      reject(error)
+    }
+  })
+  ```
+
+- resolve
+
+  ```javascript
+  //作用1：不带有任何参数，返回一个Promise
+   const p = Promise.resolve();
+   p.then(function () {
+    // ...
+   });
+  //作用2:参数是一个 Promise 实例，返回该实例
+  //作用3:参数是一个thenable对象（thenable对象指的是具有then方法的对象），将这个对象转为 Promise 对象，然后就立即执行thenable对象的then()方法。
+  let thenable = {
+    then: function(resolve, reject) {
+      resolve(42);
+    }
+  };
+  
+  let p1 = Promise.resolve(thenable);
+  p1.then(function (value) {
+    console.log(value);  // 42
+  });
+  //作用4:参数是其他值，返回一个新的 Promise 对象，状态为resolved。
+  const p = Promise.resolve('Hello');
+  
+  p.then(function (s) {
+    console.log(s)
+  });
+  // Hello
+  ```
+
+  需要注意的是，立即`resolve()`的 Promise 对象，是在本轮“事件循环”（event loop）的结束时执行，而不是在下一轮“事件循环”的开始时。
+
+  ```javascript
+  setTimeout(function () {
+    console.log('three');
+  }, 0);
+  
+  Promise.resolve().then(function () {
+    console.log('two');
+  });
+  console.log('one');
+  
+  // one
+  // two
+  // three
+  ```
+
+- reject
+
+  ```javascript
+  //返回一个新的 Promise 实例，该实例的状态为rejected。Promise.reject()方法的参数，会原封不动地作为reject的理由，变成后续方法的参数。
+  
+  const p = new Promise((resolve, reject) => reject('出错了'))
+  p.then(null, function (s) {
+    console.log(s)
+  });
+  
+  Promise.reject('出错了')
+  .catch(e => {
+    console.log(e === '出错了')
+  })
+  ```
+
+  
+
+- `then`
+
+  `then`方法可以接受两个回调函数作为参数。第一个回调函数是`Promise`对象的状态变为`resolved`时调用，第二个回调函数是`Promise`对象的状态变为`rejected`时调用。这两个函数都是可选的，不一定要提供。它们都接受`Promise`对象传出的值作为参数。
+
+  ```javascript
+  function timeout(ms){
+    return new Promise((resolve,reject)=>{
+      setTimeout(resolve, ms, 'done');
+    });
+  }
+  
+  timeout(100).then((value)=>{
+  	console.log(value);
+  })
+  ```
+
+- catch
+
+  ```javascript
+  //用于指定发生错误时的回调函数。
+  // 写法一
+  const promise = new Promise(function(resolve, reject) {
+    try {
+      throw new Error('test');
+    } catch(e) {
+      reject(e);
+    }
+  });
+  promise.catch(function(error) {
+    console.log(error);
+  });
+  
+  // 写法二
+  const promise = new Promise(function(resolve, reject) {
+    reject(new Error('test'));
+  });
+  promise.catch(function(error) {
+    console.log(error);
+  });
+  
+  //作用与then的第二个参数一致
+  // bad
+  promise
+    .then(function(data) {
+      // success
+    }, function(err) {
+      // error
+    });
+  
+  // good（推荐使用，因为catch还能捕获then中的异常）
+  promise
+    .then(function(data) { //cb
+      // success
+    })
+    .catch(function(err) {
+      // error
+    });
+  ```
+
+- finally
+
+  ```javascript
+  //在执行完then或catch指定的回调函数以后，都会执行finally方法指定的回调函数。
+  promise
+  .then(result => {···})
+  .catch(error => {···})
+  .finally(() => {···});
+  ```
+
+  
+
+- 期约链锁
+
+  ```javascript
+  //1. then返回的也是一个Promise
+  getJSON("/posts.json").then(function(json) {
+    return json.post;
+  }).then(function(post) {
+    // ...
+  });
+  
+  //2. catch返回的也是一个Promise
+  const someAsyncThing = function() {
+    return new Promise(function(resolve, reject) {
+      // 下面一行会报错，因为x没有声明
+      resolve(x + 2);
+    });
+  };
+  
+  someAsyncThing()
+  .catch(function(error) {
+    console.log('oh no', error);
+  })
+  .then(function() {
+    console.log('carry on');
+  });
+  // oh no [ReferenceError: x is not defined]
+  // carry on
+  
+  //3. finally返回的也是一个Promise
+  Promise.finally.then(()=>{})
+  ```
+
+- Promise.all()
+
+  ```javascript
+  //将多个 Promise 实例，包装成一个新的 Promise 实例.
+  const promises = [2, 3, 5, 7, 11, 13].map(function (id) {
+    return getJSON('/post/' + id + ".json");
+  });
+  
+  Promise.all(promises).then(function (posts) {
+    ...
+  }).catch(function(reason){
+    ...
+  });
+  //所有状态都是fulfilled时，all的状态才是fulfilled；其中一个是rejected，all的状态就是rejected。
+  ```
+
+- Promise.race()
+
+  ```javascript
+  //将多个 Promise 实例，包装成一个新的 Promise 实例.
+  const p = Promise.race([p1, p2, p3]);
+  //只要p1、p2、p3之中有一个实例率先改变状态，p的状态就跟着改变。那个率先改变的 Promise 实例的返回值，就传递给p的回调函数。
+  ```
+
+- Promise.allSettled()
+
+  `Promise.allSettled()`方法接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例。只有等到所有这些参数实例都返回结果，不管是`fulfilled`还是`rejected`，包装实例才会结束。该方法由 [ES2020](https://github.com/tc39/proposal-promise-allSettled) 引入。
+
+  ```javascript
+  const promises = [
+    fetch('/api-1'),
+    fetch('/api-2'),
+    fetch('/api-3'),
+  ];
+  
+  await Promise.allSettled(promises);
+  removeLoadingIndicator();
+  ```
+
+  上面代码对服务器发出三个请求，等到三个请求都结束，不管请求成功还是失败，加载的滚动图标就会消失。
+
+  该方法返回的新的 Promise 实例，一旦结束，状态总是`fulfilled`，不会变成`rejected`。状态变成`fulfilled`后，Promise 的监听函数接收到的参数是一个数组，每个成员对应一个传入`Promise.allSettled()`的 Promise 实例。
+
+- Promise.any()
+
+  ES2021 引入了[`Promise.any()`方法](https://github.com/tc39/proposal-promise-any)。该方法接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例返回。只要参数实例有一个变成`fulfilled`状态，包装实例就会变成`fulfilled`状态；如果所有参数实例都变成`rejected`状态，包装实例就会变成`rejected`状态。
+
+  `Promise.any()`跟`Promise.race()`方法很像，只有一点不同，就是不会因为某个 Promise 变成`rejected`状态而结束。
+
+  ```javascript
+  const promises = [
+    fetch('/endpoint-a').then(() => 'a'),
+    fetch('/endpoint-b').then(() => 'b'),
+    fetch('/endpoint-c').then(() => 'c'),
+  ];
+  try {
+    const first = await Promise.any(promises);
+    console.log(first);
+  } catch (error) {
+    console.log(error);
+  }
+  ```
+
+  
 
 ## BOM
 
