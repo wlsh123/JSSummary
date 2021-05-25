@@ -1,4 +1,4 @@
-# JSSummary
+# JavaScript
 
 <!--备注：该仓库主要是记录平时学习js的相关知识点-->
 
@@ -939,9 +939,59 @@ console.log(typeof null) //object
   }
   ```
 
+### async(异步函数)
+
+- 基本用法
+
+  ```javascript
+  // 函数声明
+  async function foo() {}
   
+  // 函数表达式
+  const foo = async function () {};
+  
+  // 对象的方法
+  let obj = { async foo() {} };
+  obj.foo().then(...)
+  
+  // Class 的方法
+  class Storage {
+    constructor() {
+      this.cachePromise = caches.open('avatars');
+    }
+  
+    async getAvatar(name) {
+      const cache = await this.cachePromise;
+      return cache.match(`/avatars/${name}.jpg`);
+    }
+  }
+  
+  const storage = new Storage();
+  storage.getAvatar('jake').then(…);
+  
+  // 箭头函数
+  const foo = async () => {};
+  ```
+
+- 错误处理
+
+  ```javascript
+  async function f() {
+    try {
+      await new Promise(function (resolve, reject) {
+        throw new Error('出错了');
+      });
+    } catch(e) {
+    }
+    return await('hello world');
+  }
+  ```
 
 ## BOM
+
+### window对象
+
+
 
 ## DOM
 
@@ -970,3 +1020,4 @@ console.log(typeof null) //object
 #### localStorage
 
 ## Module
+
