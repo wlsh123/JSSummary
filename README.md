@@ -1117,11 +1117,111 @@ console.log(typeof null) //object
   history.forward()//前进
   ```
 
-  
-
-
-
 ## DOM
+
+- 操纵节点
+
+  ```javascript
+  //1.appendChild() 在节点末尾添加新节点
+  //2.insertBefore() 在指定位置插入节点
+  //3.replaceChild() 替换节点
+  //4.removeChild() 移除节点
+  //5.cloneNode() 复制节点
+  ```
+
+### document对象
+
+document对象是HTMLDocument的实例，HTMLDocument继承Document。
+
+```javascript
+document.body//<body>元素
+document.title// 文档标题
+document.URL //文档URL
+document.domain //域名
+document.referer //来源
+```
+
+- 定位元素
+
+  ```javascript
+  //1.getElementById()
+  //2.getElementsByTagName()
+  //3.getElementsByName()
+  //4.getElementsByClassName()
+  ```
+
+### element元素
+
+- 元素属性
+
+  ```javascript
+  let div = document.getElementById('div');
+  div.getAttribute('id')//获取id属性
+  div.setAttribute('id', "mydiv")//设置id属性
+  div.removeAttribute('id')//移除id属性
+  ```
+
+- 创建元素
+
+  ```javascript
+  var div = document.createElement('div')
+  ```
+
+### Selector API
+
+- querySelector()
+
+  ```javascript
+  let body = document.querySelector("body");//取得<body>元素
+  let myDiv = document.querySelector('#div'); //取得ID为‘div’的元素
+  let selected = document.querySelector(".selected"); //取得类目为‘selected’的元素
+  let img = document.body.queryelector('img.button'); //取得类名为‘button’的图片
+  ```
+
+- querySelectorAll()
+
+  该方法和querySelector()一样，也接收一个用于查询的参数，但会返回所有匹配的节点。返回的是一个NodeList的静态实例。
+
+- matches()
+
+  ```javascript
+  //接收一个CSS选择符参数，如果匹配就返回true
+  if(document.body.matches('body.page1')){
+     //true
+     }
+  ```
+
+- 元素尺寸
+
+  ```javascript
+  offsetHeight  //元素在垂直方向上的高度
+  offsetWidth  //元素在水平方向上的宽度
+  
+  offsetLeft //元素边框距左侧距离
+  offsetTop //元素边框距上侧距离
+  ```
+
+  <img src="/Users/wanglsh/Desktop/JSSummary/src/images/元素偏移尺寸.png" style="zoom:40%;" />
+
+- 客户端尺寸
+
+  ```javascript
+  clientHeight //内容+内边距高度
+  clientWidth //内容+内边距宽度
+  ```
+
+  <img src="/Users/wanglsh/Desktop/JSSummary/src/images/元素的尺寸.png" alt="元素的尺寸" style="zoom:40%;" />
+
+- 滚动尺寸
+
+  ```javascript
+  scrollHeight
+  scrollWidth
+  scrollLeft
+  scrollTop
+  ```
+
+  <img src="/Users/wanglsh/Desktop/JSSummary/src/images/滚动尺寸.png" alt="滚动尺寸" style="zoom:40%;" />
 
 ## 事件
 
