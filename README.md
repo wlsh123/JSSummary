@@ -991,6 +991,134 @@ console.log(typeof null) //object
 
 ### window对象
 
+- 窗口位置
+
+  ```javascript
+  window.moveTo(x,y)//窗口移动到（x，y）
+  window.moveBy(x,y)//窗口向右移动x像素，向上移动y像素。
+  ```
+
+- 窗口大小
+
+  ```javascript
+  //浏览器窗口中页面视口的大小
+  window.innerHeight
+  window.innerWidth
+  
+  //浏览器窗口自身的大小
+  window.outerHeight
+  window.outerWidth
+  ```
+
+- 视口位置
+
+  ```javascript
+  //文档相对视口滚动距离
+  window.pageXoffset || window.scrollX
+  window.pageYoffset || window.scrollY
+  
+  //scroll()、scrollTo()、scrollBy()
+  window.scrollBy(0,100)//相对当前视口向下滚动100像素
+  window.scrollTo(0,0)//滚动到页面左上角
+  
+  window.scroBy({//接收option字典，通过behavior属性告诉浏览器是否平滑滚动
+    left:100,
+    top:100,
+    behavior:'auto'//正常滚动
+  })
+  window.scroTo({//接收option字典，通过behavior属性告诉浏览器是否平滑滚动
+    left:100,
+    top:100,
+    behavior:'smooth'//平滑滚动
+  })
+  ```
+
+- 打开窗口
+
+  ```javascript
+  //window.open(url,targetWin,特性字符串，true)
+  
+  var Win = window.open("http://www.baidu.com", "newWindow", "height=400, width=400, top=10, left=10");
+  //新开一个叫“newWindow”的窗口，Win表示对这个新窗口的引用。
+  
+  Win.opener//指向打开它的窗口
+  Win.opener == window. //true
+  ```
+
+- 定时器
+
+  ```javascript
+  //setTimeout() 指定一定时间后执行某些代码
+  var timerId = setTimeout(()=>alert("hello"), 1000);
+  clearTimeout(timerId);
+  
+  //setInterval()	指定每隔一段时间执行某些代码
+  var timerId = setInterval(()=>alert("hello"), 1000);
+  clearInterval(timerId);
+  ```
+
+- 对话框
+
+  ```javascript
+  //1.alter()
+  //2.confirm()
+  //3.prompt()
+  ```
+
+### location对象
+
+​	这个对象即是window的属性，又是document的属性。所以window.location和document.location指向同一个对象。	
+
+​	URL：http://foouse:barpassword@www.wrox.com:80/Will/?wq=js#contents.
+
+| 属性              | 值                                                           | 说明                            |
+| ----------------- | ------------------------------------------------------------ | ------------------------------- |
+| location.hash     | '#contents'                                                  | URL散列值，如果没有就是空字符串 |
+| location.host     | 'www.wrox.com:80'                                            | 服务器名及端口                  |
+| location.hostname | 'www.wrox.com'                                               | 服务器名                        |
+| location.href     | 'http://foouse:barpassword@www.wrox.com:80/Will/?wq=js#contents' | 完整的URL                       |
+| location.pathname | '/Will/'                                                     | URL中的路径或文件名             |
+| location.port     | '80'                                                         | 端口                            |
+| location.protocol | 'http:'                                                      | 请求协议                        |
+| location.search   | '?wq=js'                                                     | URL查询字符串                   |
+| location.username | 'foouse'                                                     | 域名前指定的用户名              |
+| location.password | 'barpassword'                                                | 域名前指定的密码                |
+| location.origin   | 'http://www.wrox.com'                                        | URL源地址                       |
+
+- 操作地址
+
+  ```javascript
+  //1.location.assign() 
+  location.assign('http://www.baidu.com')//跳转到新页面
+  
+  //2.location.replace()
+  location.replace('http://www.baidu.com')//跳转到新页面
+  
+  //3.location.reload()
+  location.reload('http://www.baidu.com')//重新加载
+  ```
+
+### navigator对象
+
+### screen对象
+
+### history对象
+
+- 导航
+
+  ```javascript
+  //history.go()
+  history.go(-1)//后退一页
+  history.go(1)//前进一页
+  history.go('http://www.baidu.com')//导航到http://www.baidu.com
+  
+  //back()、forward()
+  history.back()//后退
+  history.forward()//前进
+  ```
+
+  
+
 
 
 ## DOM
