@@ -1,4 +1,4 @@
-# JSSummary
+# JavaScript
 
 <!--备注：该仓库主要是记录平时学习js的相关知识点-->
 
@@ -506,41 +506,722 @@ console.log(typeof null) //object
 
 ### Function
 
-## Class
-
-## 迭代器与生成器
-
-## 数据结构
-
-## 语句
-
-
-
 ## 变量
 
-### var
+### 变量声明
 
-### let
-
-### const
+- var
+- let
+- const
+  1. var 声明的变量属于函数作用域，let 和 const 声明的变量属于块级作用域；
+  2. var 存在变量提升现象，而 let 和 const 没有此类现象；
+  3. var 变量可以重复声明，而在同一个块级作用域，let 变量不能重新声明，const 变量不能修改。
 
 ### 作用域
 
+#### [闭包](https://zhuanlan.zhihu.com/p/22486908)
+
 ### 内存
 
-## Date
+垃圾回收
 
-## Math
+- 标记清理
+- 引用计数
 
-## RegExp
+## 语句
+
+- 条件语句
+
+  ```javascript
+  //1.if语句
+   if(condition){
+     ...
+   }
+  //2.while语句
+    while(expression){
+      ...
+    }
+  //3.do-while语句
+     do{
+  			...
+     }while(expression)
+  ```
+
+- 循环语句
+
+  ```javascript
+  //1.for语句
+   for(initValue, expression, state){
+     ...
+   }
+  //2.for-in语句
+    for(... in ...){
+      ...
+    }
+  //3.for-of语句
+    	for(...of ...){
+      ...
+    }
+  ```
+
+- 分支语句
+
+  ```javascript
+  //1.switch语句
+   switch(expression){
+     case value1:
+       statement
+       continue;
+     case value2:
+  		 statement
+       breack;
+     default:
+       statement
+   }
+  ```
+
+## 迭代器与生成器
+
+- Iterator(迭代器)
+
+  它是一种接口，为各种不同的数据结构提供统一的访问机制。任何数据结构只要部署 Iterator 接口，就可以完成遍历操作（即依次处理该数据结构的所有成员）。
+
+  Iterator 的遍历过程是这样的。
+
+  （1）创建一个指针对象，指向当前数据结构的起始位置。也就是说，遍历器对象本质上，就是一个指针对象。
+
+  （2）第一次调用指针对象的`next`方法，可以将指针指向数据结构的第一个成员。
+
+  （3）第二次调用指针对象的`next`方法，指针就指向数据结构的第二个成员。
+
+  （4）不断调用指针对象的`next`方法，直到它指向数据结构的结束位置。
+
+  `next`方法返回一个对象，表示当前数据成员的信息。这个对象具有`value`和`done`两个属性，`value`属性返回当前位置的成员，`done`属性是一个布尔值，表示遍历是否结束，即是否还有必要再一次调用`next`方法。
+
+  总之，调用指针对象的`next`方法，就可以遍历事先给定的数据结构。
+
+  原生具备 Iterator 接口的数据结构如下。
+
+  - Array
+  - Map
+  - Set
+  - String
+  - TypedArray
+  - 函数的 arguments 对象
+  - NodeList 对象
+
+- Generator(生成器)
+
+  Generator 函数是一个普通函数，但是有两个特征。一是，`function`关键字与函数名之间有一个星号；二是，函数体内部使用`yield`表达式，定义不同的内部状态（`yield`在英语里的意思就是“产出”）。
+
+  ```javascript
+  function* helloWorldGenerator() {
+    yield 'hello';
+    yield 'world';
+    return 'ending';
+  }
+  
+  var hw = helloWorldGenerator();
+  ```
+
+  调用 Generator 函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象，也就是上一章介绍的遍历器对象（Iterator Object）。
+
+  下一步，必须调用遍历器对象的`next`方法，使得指针移向下一个状态。也就是说，每次调用`next`方法，内部指针就从函数头部或上一次停下来的地方开始执行，直到遇到下一个`yield`表达式（或`return`语句）为止。换言之，Generator 函数是分段执行的，`yield`表达式是暂停执行的标记，而`next`方法可以恢复执行。
+
+  ```javascript
+  hw.next() // { value: 'hello', done: false }
+  hw.next()// { value: 'world', done: false }
+  hw.next()// { value: 'ending', done: true }
+  hw.next()// { value: undefined, done: true }
+  ```
+
+  总结一下，调用 Generator 函数，返回一个遍历器对象，代表 Generator 函数的内部指针。以后，每次调用遍历器对象的`next`方法，就会返回一个有着`value`和`done`两个属性的对象。`value`属性表示当前的内部状态的值，是`yield`表达式后面那个表达式的值；`done`属性是一个布尔值，表示是否遍历结束。
+
+  - yield
+
+  由于 Generator 函数返回的遍历器对象，只有调用`next`方法才会遍历下一个内部状态，所以其实提供了一种可以暂停执行的函数。`yield`表达式就是暂停标志。
+
+  遍历器对象的`next`方法的运行逻辑如下。
+
+  （1）遇到`yield`表达式，就暂停执行后面的操作，并将紧跟在`yield`后面的那个表达式的值，作为返回的对象的`value`属性值。
+
+  （2）下一次调用`next`方法时，再继续往下执行，直到遇到下一个`yield`表达式。
+
+  （3）如果没有再遇到新的`yield`表达式，就一直运行到函数结束，直到`return`语句为止，并将`return`语句后面的表达式的值，作为返回的对象的`value`属性值。
+
+  （4）如果该函数没有`return`语句，则返回的对象的`value`属性值为`undefined`。
+
+## 类
+
+- 构造函数
+
+  ```javascript
+  class Person(){
+    constructor(){
+      super()
+  		...
+    }
+  }
+  ```
+
+- 继承
+
+  ```javascript
+  class A extends react.Component(){
+  	constructor(){
+      super()
+      ...
+    }
+  }
+  ```
+
+- 静态
+
+  ```javascript
+  class A extends react.Component(){
+  	constructor(){
+      super()
+      ...
+    }
+    static proptype = {
+      ...
+    }
+  }
+  ```
+
+  
 
 ## 异步 
 
-### Promise
+### Promise(期约)
+
+所谓`Promise`，简单说就是一个容器，里面保存着某个未来才会结束的事件（通常是一个异步操作）的结果。从语法上说，Promise 是一个对象，从它可以获取异步操作的消息。Promise 提供统一的 API，各种异步操作都可以用同样的方法进行处理。
+
+- 期约实例
+
+  ```javascript
+  const p = new Promise((resolve,reject)=>{
+  	if(){
+      resolve(value) 
+       }else{
+      reject(error)
+    }
+  })
+  ```
+
+- resolve
+
+  ```javascript
+  //作用1：不带有任何参数，返回一个Promise
+   const p = Promise.resolve();
+   p.then(function () {
+    // ...
+   });
+  //作用2:参数是一个 Promise 实例，返回该实例
+  //作用3:参数是一个thenable对象（thenable对象指的是具有then方法的对象），将这个对象转为 Promise 对象，然后就立即执行thenable对象的then()方法。
+  let thenable = {
+    then: function(resolve, reject) {
+      resolve(42);
+    }
+  };
+  
+  let p1 = Promise.resolve(thenable);
+  p1.then(function (value) {
+    console.log(value);  // 42
+  });
+  //作用4:参数是其他值，返回一个新的 Promise 对象，状态为resolved。
+  const p = Promise.resolve('Hello');
+  
+  p.then(function (s) {
+    console.log(s)
+  });
+  // Hello
+  ```
+
+  需要注意的是，立即`resolve()`的 Promise 对象，是在本轮“事件循环”（event loop）的结束时执行，而不是在下一轮“事件循环”的开始时。
+
+  ```javascript
+  setTimeout(function () {
+    console.log('three');
+  }, 0);
+  
+  Promise.resolve().then(function () {
+    console.log('two');
+  });
+  console.log('one');
+  
+  // one
+  // two
+  // three
+  ```
+
+- reject
+
+  ```javascript
+  //返回一个新的 Promise 实例，该实例的状态为rejected。Promise.reject()方法的参数，会原封不动地作为reject的理由，变成后续方法的参数。
+  
+  const p = new Promise((resolve, reject) => reject('出错了'))
+  p.then(null, function (s) {
+    console.log(s)
+  });
+  
+  Promise.reject('出错了')
+  .catch(e => {
+    console.log(e === '出错了')
+  })
+  ```
+
+  
+
+- `then`
+
+  `then`方法可以接受两个回调函数作为参数。第一个回调函数是`Promise`对象的状态变为`resolved`时调用，第二个回调函数是`Promise`对象的状态变为`rejected`时调用。这两个函数都是可选的，不一定要提供。它们都接受`Promise`对象传出的值作为参数。
+
+  ```javascript
+  function timeout(ms){
+    return new Promise((resolve,reject)=>{
+      setTimeout(resolve, ms, 'done');
+    });
+  }
+  
+  timeout(100).then((value)=>{
+  	console.log(value);
+  })
+  ```
+
+- catch
+
+  ```javascript
+  //用于指定发生错误时的回调函数。
+  // 写法一
+  const promise = new Promise(function(resolve, reject) {
+    try {
+      throw new Error('test');
+    } catch(e) {
+      reject(e);
+    }
+  });
+  promise.catch(function(error) {
+    console.log(error);
+  });
+  
+  // 写法二
+  const promise = new Promise(function(resolve, reject) {
+    reject(new Error('test'));
+  });
+  promise.catch(function(error) {
+    console.log(error);
+  });
+  
+  //作用与then的第二个参数一致
+  // bad
+  promise
+    .then(function(data) {
+      // success
+    }, function(err) {
+      // error
+    });
+  
+  // good（推荐使用，因为catch还能捕获then中的异常）
+  promise
+    .then(function(data) { //cb
+      // success
+    })
+    .catch(function(err) {
+      // error
+    });
+  ```
+
+- finally
+
+  ```javascript
+  //在执行完then或catch指定的回调函数以后，都会执行finally方法指定的回调函数。
+  promise
+  .then(result => {···})
+  .catch(error => {···})
+  .finally(() => {···});
+  ```
+
+  
+
+- 期约链锁
+
+  ```javascript
+  //1. then返回的也是一个Promise
+  getJSON("/posts.json").then(function(json) {
+    return json.post;
+  }).then(function(post) {
+    // ...
+  });
+  
+  //2. catch返回的也是一个Promise
+  const someAsyncThing = function() {
+    return new Promise(function(resolve, reject) {
+      // 下面一行会报错，因为x没有声明
+      resolve(x + 2);
+    });
+  };
+  
+  someAsyncThing()
+  .catch(function(error) {
+    console.log('oh no', error);
+  })
+  .then(function() {
+    console.log('carry on');
+  });
+  // oh no [ReferenceError: x is not defined]
+  // carry on
+  
+  //3. finally返回的也是一个Promise
+  Promise.finally.then(()=>{})
+  ```
+
+- Promise.all()
+
+  ```javascript
+  //将多个 Promise 实例，包装成一个新的 Promise 实例.
+  const promises = [2, 3, 5, 7, 11, 13].map(function (id) {
+    return getJSON('/post/' + id + ".json");
+  });
+  
+  Promise.all(promises).then(function (posts) {
+    ...
+  }).catch(function(reason){
+    ...
+  });
+  //所有状态都是fulfilled时，all的状态才是fulfilled；其中一个是rejected，all的状态就是rejected。
+  ```
+
+- Promise.race()
+
+  ```javascript
+  //将多个 Promise 实例，包装成一个新的 Promise 实例.
+  const p = Promise.race([p1, p2, p3]);
+  //只要p1、p2、p3之中有一个实例率先改变状态，p的状态就跟着改变。那个率先改变的 Promise 实例的返回值，就传递给p的回调函数。
+  ```
+
+- Promise.allSettled()
+
+  `Promise.allSettled()`方法接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例。只有等到所有这些参数实例都返回结果，不管是`fulfilled`还是`rejected`，包装实例才会结束。该方法由 [ES2020](https://github.com/tc39/proposal-promise-allSettled) 引入。
+
+  ```javascript
+  const promises = [
+    fetch('/api-1'),
+    fetch('/api-2'),
+    fetch('/api-3'),
+  ];
+  
+  await Promise.allSettled(promises);
+  removeLoadingIndicator();
+  ```
+
+  上面代码对服务器发出三个请求，等到三个请求都结束，不管请求成功还是失败，加载的滚动图标就会消失。
+
+  该方法返回的新的 Promise 实例，一旦结束，状态总是`fulfilled`，不会变成`rejected`。状态变成`fulfilled`后，Promise 的监听函数接收到的参数是一个数组，每个成员对应一个传入`Promise.allSettled()`的 Promise 实例。
+
+- Promise.any()
+
+  ES2021 引入了[`Promise.any()`方法](https://github.com/tc39/proposal-promise-any)。该方法接受一组 Promise 实例作为参数，包装成一个新的 Promise 实例返回。只要参数实例有一个变成`fulfilled`状态，包装实例就会变成`fulfilled`状态；如果所有参数实例都变成`rejected`状态，包装实例就会变成`rejected`状态。
+
+  `Promise.any()`跟`Promise.race()`方法很像，只有一点不同，就是不会因为某个 Promise 变成`rejected`状态而结束。
+
+  ```javascript
+  const promises = [
+    fetch('/endpoint-a').then(() => 'a'),
+    fetch('/endpoint-b').then(() => 'b'),
+    fetch('/endpoint-c').then(() => 'c'),
+  ];
+  try {
+    const first = await Promise.any(promises);
+    console.log(first);
+  } catch (error) {
+    console.log(error);
+  }
+  ```
+
+### async(异步函数)
+
+- 基本用法
+
+  ```javascript
+  // 函数声明
+  async function foo() {}
+  
+  // 函数表达式
+  const foo = async function () {};
+  
+  // 对象的方法
+  let obj = { async foo() {} };
+  obj.foo().then(...)
+  
+  // Class 的方法
+  class Storage {
+    constructor() {
+      this.cachePromise = caches.open('avatars');
+    }
+  
+    async getAvatar(name) {
+      const cache = await this.cachePromise;
+      return cache.match(`/avatars/${name}.jpg`);
+    }
+  }
+  
+  const storage = new Storage();
+  storage.getAvatar('jake').then(…);
+  
+  // 箭头函数
+  const foo = async () => {};
+  ```
+
+- 错误处理
+
+  ```javascript
+  async function f() {
+    try {
+      await new Promise(function (resolve, reject) {
+        throw new Error('出错了');
+      });
+    } catch(e) {
+    }
+    return await('hello world');
+  }
+  ```
 
 ## BOM
 
+### window对象
+
+- 窗口位置
+
+  ```javascript
+  window.moveTo(x,y)//窗口移动到（x，y）
+  window.moveBy(x,y)//窗口向右移动x像素，向上移动y像素。
+  ```
+
+- 窗口大小
+
+  ```javascript
+  //浏览器窗口中页面视口的大小
+  window.innerHeight
+  window.innerWidth
+  
+  //浏览器窗口自身的大小
+  window.outerHeight
+  window.outerWidth
+  ```
+
+- 视口位置
+
+  ```javascript
+  //文档相对视口滚动距离
+  window.pageXoffset || window.scrollX
+  window.pageYoffset || window.scrollY
+  
+  //scroll()、scrollTo()、scrollBy()
+  window.scrollBy(0,100)//相对当前视口向下滚动100像素
+  window.scrollTo(0,0)//滚动到页面左上角
+  
+  window.scroBy({//接收option字典，通过behavior属性告诉浏览器是否平滑滚动
+    left:100,
+    top:100,
+    behavior:'auto'//正常滚动
+  })
+  window.scroTo({//接收option字典，通过behavior属性告诉浏览器是否平滑滚动
+    left:100,
+    top:100,
+    behavior:'smooth'//平滑滚动
+  })
+  ```
+
+- 打开窗口
+
+  ```javascript
+  //window.open(url,targetWin,特性字符串，true)
+  
+  var Win = window.open("http://www.baidu.com", "newWindow", "height=400, width=400, top=10, left=10");
+  //新开一个叫“newWindow”的窗口，Win表示对这个新窗口的引用。
+  
+  Win.opener//指向打开它的窗口
+  Win.opener == window. //true
+  ```
+
+- 定时器
+
+  ```javascript
+  //setTimeout() 指定一定时间后执行某些代码
+  var timerId = setTimeout(()=>alert("hello"), 1000);
+  clearTimeout(timerId);
+  
+  //setInterval()	指定每隔一段时间执行某些代码
+  var timerId = setInterval(()=>alert("hello"), 1000);
+  clearInterval(timerId);
+  ```
+
+- 对话框
+
+  ```javascript
+  //1.alter()
+  //2.confirm()
+  //3.prompt()
+  ```
+
+### location对象
+
+​	这个对象即是window的属性，又是document的属性。所以window.location和document.location指向同一个对象。	
+
+​	URL：http://foouse:barpassword@www.wrox.com:80/Will/?wq=js#contents.
+
+| 属性              | 值                                                           | 说明                            |
+| ----------------- | ------------------------------------------------------------ | ------------------------------- |
+| location.hash     | '#contents'                                                  | URL散列值，如果没有就是空字符串 |
+| location.host     | 'www.wrox.com:80'                                            | 服务器名及端口                  |
+| location.hostname | 'www.wrox.com'                                               | 服务器名                        |
+| location.href     | 'http://foouse:barpassword@www.wrox.com:80/Will/?wq=js#contents' | 完整的URL                       |
+| location.pathname | '/Will/'                                                     | URL中的路径或文件名             |
+| location.port     | '80'                                                         | 端口                            |
+| location.protocol | 'http:'                                                      | 请求协议                        |
+| location.search   | '?wq=js'                                                     | URL查询字符串                   |
+| location.username | 'foouse'                                                     | 域名前指定的用户名              |
+| location.password | 'barpassword'                                                | 域名前指定的密码                |
+| location.origin   | 'http://www.wrox.com'                                        | URL源地址                       |
+
+- 操作地址
+
+  ```javascript
+  //1.location.assign() 
+  location.assign('http://www.baidu.com')//跳转到新页面
+  
+  //2.location.replace()
+  location.replace('http://www.baidu.com')//跳转到新页面
+  
+  //3.location.reload()
+  location.reload('http://www.baidu.com')//重新加载
+  ```
+
+### navigator对象
+
+### screen对象
+
+### history对象
+
+- 导航
+
+  ```javascript
+  //history.go()
+  history.go(-1)//后退一页
+  history.go(1)//前进一页
+  history.go('http://www.baidu.com')//导航到http://www.baidu.com
+  
+  //back()、forward()
+  history.back()//后退
+  history.forward()//前进
+  ```
+
 ## DOM
+
+- 操纵节点
+
+  ```javascript
+  //1.appendChild() 在节点末尾添加新节点
+  //2.insertBefore() 在指定位置插入节点
+  //3.replaceChild() 替换节点
+  //4.removeChild() 移除节点
+  //5.cloneNode() 复制节点
+  ```
+
+### document对象
+
+document对象是HTMLDocument的实例，HTMLDocument继承Document。
+
+```javascript
+document.body//<body>元素
+document.title// 文档标题
+document.URL //文档URL
+document.domain //域名
+document.referer //来源
+```
+
+- 定位元素
+
+  ```javascript
+  //1.getElementById()
+  //2.getElementsByTagName()
+  //3.getElementsByName()
+  //4.getElementsByClassName()
+  ```
+
+### element元素
+
+- 元素属性
+
+  ```javascript
+  let div = document.getElementById('div');
+  div.getAttribute('id')//获取id属性
+  div.setAttribute('id', "mydiv")//设置id属性
+  div.removeAttribute('id')//移除id属性
+  ```
+
+- 创建元素
+
+  ```javascript
+  var div = document.createElement('div')
+  ```
+
+### Selector API
+
+- querySelector()
+
+  ```javascript
+  let body = document.querySelector("body");//取得<body>元素
+  let myDiv = document.querySelector('#div'); //取得ID为‘div’的元素
+  let selected = document.querySelector(".selected"); //取得类目为‘selected’的元素
+  let img = document.body.queryelector('img.button'); //取得类名为‘button’的图片
+  ```
+
+- querySelectorAll()
+
+  该方法和querySelector()一样，也接收一个用于查询的参数，但会返回所有匹配的节点。返回的是一个NodeList的静态实例。
+
+- matches()
+
+  ```javascript
+  //接收一个CSS选择符参数，如果匹配就返回true
+  if(document.body.matches('body.page1')){
+     //true
+     }
+  ```
+
+- 元素尺寸
+
+  ```javascript
+  offsetHeight  //元素在垂直方向上的高度
+  offsetWidth  //元素在水平方向上的宽度
+  
+  offsetLeft //元素边框距左侧距离
+  offsetTop //元素边框距上侧距离
+  ```
+
+  <img src="/Users/wanglsh/Desktop/JSSummary/src/images/元素偏移尺寸.png" style="zoom:40%;" />
+
+- 客户端尺寸
+
+  ```javascript
+  clientHeight //内容+内边距高度
+  clientWidth //内容+内边距宽度
+  ```
+
+  <img src="/Users/wanglsh/Desktop/JSSummary/src/images/元素的尺寸.png" alt="元素的尺寸" style="zoom:40%;" />
+
+- 滚动尺寸
+
+  ```javascript
+  scrollHeight
+  scrollWidth
+  scrollLeft
+  scrollTop
+  ```
+
+  <img src="/Users/wanglsh/Desktop/JSSummary/src/images/滚动尺寸.png" alt="滚动尺寸" style="zoom:40%;" />
 
 ## 事件
 
@@ -567,3 +1248,4 @@ console.log(typeof null) //object
 #### localStorage
 
 ## Module
+
